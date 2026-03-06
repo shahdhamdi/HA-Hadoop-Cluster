@@ -1,0 +1,78 @@
+<configuration>
+  <property>
+    <name>dfs.nameservices</name>
+    <value>mycluster</value>
+  </property>
+
+  <property>
+    <name>dfs.ha.namenodes.mycluster</name>
+    <value>nn1,nn2</value>
+  </property>
+
+  <property>
+    <name>dfs.namenode.rpc-address.mycluster.nn1</name>
+    <value>node01:8020</value>
+  </property>
+  <property>
+    <name>dfs.namenode.rpc-address.mycluster.nn2</name>
+    <value>node02:8020</value>
+  </property>
+
+  <property>
+    <name>dfs.namenode.http-address.mycluster.nn1</name>
+    <value>node01:9870</value>
+  </property>
+  <property>
+    <name>dfs.namenode.http-address.mycluster.nn2</name>
+    <value>node02:9870</value>
+  </property>
+
+  <property>
+    <name>dfs.namenode.shared.edits.dir</name>
+    <value>qjournal://node01:8485;node02:8485;node03:8485/mycluster</value>
+  </property>
+
+  <property>
+    <name>dfs.journalnode.edits.dir</name>
+    <value>/opt/hadoop/data/journal</value>
+  </property>
+
+  <property>
+    <name>dfs.datanode.data.dir</name>
+    <value>/opt/hadoop/data/datanode</value>
+  </property>
+
+  <property>
+    <name>dfs.namenode.name.dir</name>
+    <value>file:///opt/hadoop/data/namenode</value>
+  </property>
+
+  <property>
+    <name>dfs.client.failover.proxy.provider.mycluster</name>
+    <value>
+      org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider
+    </value>
+  </property>
+
+  <property>
+    <name>dfs.ha.fencing.methods</name>
+    <value>shell(/bin/true)</value>
+  </property>
+  <property>
+  <name>dfs.ha.automatic-failover.enabled</name>
+  <value>true</value>
+</property>
+
+<property>
+ <name>ha.zookeeper.quorum</name>
+<value>node03:2181,node04:2181,node05:2181</value>
+</property>
+<property>
+  <name>dfs.namenode.dead.datanode.interval</name>
+  <value>200</value>
+</property>
+<property>
+  <name>dfs.replication</name>
+  <value>1</value>
+</property>
+</configuration>
