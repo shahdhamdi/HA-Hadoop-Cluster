@@ -1,0 +1,28 @@
+ls -l:
+total 16
+-rw-r--r-- 1 root root  105 Mar  6 19:24 container_tokens
+-rwx------ 1 root root  671 Mar  6 19:24 default_container_executor.sh
+-rwx------ 1 root root  616 Mar  6 19:24 default_container_executor_session.sh
+lrwxrwxrwx 1 root root   92 Mar  6 19:24 job.jar -> /shared/nm-local/usercache/root/appcache/application_1772824885986_0001/filecache/11/job.jar
+lrwxrwxrwx 1 root root   92 Mar  6 19:24 job.xml -> /shared/nm-local/usercache/root/appcache/application_1772824885986_0001/filecache/13/job.xml
+drwxr-xr-x 1 root root 4096 Mar  6 19:24 jobSubmitDir
+-rwx------ 1 root root 5113 Mar  6 19:24 launch_container.sh
+drwx--x--- 1 root root 4096 Mar  6 19:24 tmp
+find -L . -maxdepth 5 -ls:
+844424930267065      0 drwx--x---   1 root     root         4096 Mar  6 19:24 .
+844424930267069      0 -rw-r--r--   1 root     root           12 Mar  6 19:24 ./.container_tokens.crc
+844424930267075      0 -rw-r--r--   1 root     root           16 Mar  6 19:24 ./.default_container_executor.sh.crc
+844424930267073      0 -rw-r--r--   1 root     root           16 Mar  6 19:24 ./.default_container_executor_session.sh.crc
+844424930267071      0 -rw-r--r--   1 root     root           48 Mar  6 19:24 ./.launch_container.sh.crc
+844424930267068      0 -rw-r--r--   1 root     root          105 Mar  6 19:24 ./container_tokens
+844424930267074      4 -rwx------   1 root     root          671 Mar  6 19:24 ./default_container_executor.sh
+844424930267072      4 -rwx------   1 root     root          616 Mar  6 19:24 ./default_container_executor_session.sh
+844424930267051      0 drwx------   1 root     root         4096 Mar  6 19:24 ./job.jar
+844424930267052    276 -r-x------   1 root     root       281348 Mar  6 19:24 ./job.jar/job.jar
+844424930267057    236 -r-x------   1 root     root       239723 Mar  6 19:24 ./job.xml
+844424930267079      0 drwxr-xr-x   1 root     root         4096 Mar  6 19:24 ./jobSubmitDir
+844424930267054      0 -r-x------   1 root     root          105 Mar  6 19:24 ./jobSubmitDir/job.split
+1407374883688359      0 -r-x------   1 root     root           20 Mar  6 19:24 ./jobSubmitDir/job.splitmetainfo
+ 844424930267070      8 -rwx------   1 root     root         5113 Mar  6 19:24 ./launch_container.sh
+ 844424930267067      0 drwx--x---   1 root     root         4096 Mar  6 19:24 ./tmp
+broken symlinks(find -L . -maxdepth 5 -type l -ls):

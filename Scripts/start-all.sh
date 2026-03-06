@@ -106,7 +106,10 @@ if [[ "$NODE_ROLE" =~ node0[3-5] ]]; then
   echo "Starting NodeManager..."
   yarn --daemon start nodemanager
 fi
-
+if [[ "$NODE_ROLE" == "node01" ]]; then
+  echo "Starting JobHistory Server..."
+  mapred --daemon start historyserver
+fi
 echo "All services started on $NODE_ROLE."
 
 tail -f /dev/null

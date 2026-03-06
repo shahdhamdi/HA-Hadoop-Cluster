@@ -1,0 +1,24 @@
+ls -l:
+total 16
+-rw-r--r-- 1 root root  129 Mar  6 19:24 container_tokens
+-rwx------ 1 root root  671 Mar  6 19:24 default_container_executor.sh
+-rwx------ 1 root root  616 Mar  6 19:24 default_container_executor_session.sh
+lrwxrwxrwx 1 root root   92 Mar  6 19:24 job.jar -> /shared/nm-local/usercache/root/appcache/application_1772824885986_0001/filecache/14/job.jar
+lrwxrwxrwx 1 root root   92 Mar  6 19:24 job.xml -> /shared/nm-local/usercache/root/appcache/application_1772824885986_0001/filecache/15/job.xml
+-rwx------ 1 root root 5093 Mar  6 19:24 launch_container.sh
+drwx--x--- 1 root root 4096 Mar  6 19:24 tmp
+find -L . -maxdepth 5 -ls:
+844424930267092      0 drwx--x---   1 root     root         4096 Mar  6 19:24 .
+281474976845784      0 -rw-r--r--   1 root     root           12 Mar  6 19:24 ./.container_tokens.crc
+281474976845790      0 -rw-r--r--   1 root     root           16 Mar  6 19:24 ./.default_container_executor.sh.crc
+281474976845788      0 -rw-r--r--   1 root     root           16 Mar  6 19:24 ./.default_container_executor_session.sh.crc
+281474976845786      0 -rw-r--r--   1 root     root           48 Mar  6 19:24 ./.launch_container.sh.crc
+281474976845783      0 -rw-r--r--   1 root     root          129 Mar  6 19:24 ./container_tokens
+281474976845789      4 -rwx------   1 root     root          671 Mar  6 19:24 ./default_container_executor.sh
+281474976845787      4 -rwx------   1 root     root          616 Mar  6 19:24 ./default_container_executor_session.sh
+1688849860399015      0 drwx------   1 root     root         4096 Mar  6 19:24 ./job.jar
+1125899906977705    276 -r-x------   1 root     root       281348 Mar  6 19:24 ./job.jar/job.jar
+1125899906977707    236 -r-x------   1 root     root       239723 Mar  6 19:24 ./job.xml
+ 281474976845785      8 -rwx------   1 root     root         5093 Mar  6 19:24 ./launch_container.sh
+ 281474976845782      0 drwx--x---   1 root     root         4096 Mar  6 19:24 ./tmp
+broken symlinks(find -L . -maxdepth 5 -type l -ls):

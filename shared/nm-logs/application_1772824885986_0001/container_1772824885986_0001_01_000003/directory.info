@@ -1,0 +1,24 @@
+ls -l:
+total 16
+-rw-r--r-- 1 root root  129 Mar  6 19:25 container_tokens
+-rwx------ 1 root root  671 Mar  6 19:25 default_container_executor.sh
+-rwx------ 1 root root  616 Mar  6 19:25 default_container_executor_session.sh
+lrwxrwxrwx 1 root root   92 Mar  6 19:25 job.jar -> /shared/nm-local/usercache/root/appcache/application_1772824885986_0001/filecache/14/job.jar
+lrwxrwxrwx 1 root root   92 Mar  6 19:25 job.xml -> /shared/nm-local/usercache/root/appcache/application_1772824885986_0001/filecache/15/job.xml
+-rwx------ 1 root root 5281 Mar  6 19:25 launch_container.sh
+drwx--x--- 1 root root 4096 Mar  6 19:25 tmp
+find -L . -maxdepth 5 -ls:
+1125899906977748      0 drwx--x---   1 root     root         4096 Mar  6 19:25 .
+ 562949953556441      0 -rw-r--r--   1 root     root           12 Mar  6 19:25 ./.container_tokens.crc
+ 562949953556447      0 -rw-r--r--   1 root     root           16 Mar  6 19:25 ./.default_container_executor.sh.crc
+ 562949953556445      0 -rw-r--r--   1 root     root           16 Mar  6 19:25 ./.default_container_executor_session.sh.crc
+ 562949953556443      0 -rw-r--r--   1 root     root           52 Mar  6 19:25 ./.launch_container.sh.crc
+ 562949953556440      0 -rw-r--r--   1 root     root          129 Mar  6 19:25 ./container_tokens
+ 562949953556446      4 -rwx------   1 root     root          671 Mar  6 19:25 ./default_container_executor.sh
+ 562949953556444      4 -rwx------   1 root     root          616 Mar  6 19:25 ./default_container_executor_session.sh
+1688849860399015      0 drwx------   1 root     root         4096 Mar  6 19:24 ./job.jar
+1125899906977705    276 -r-x------   1 root     root       281348 Mar  6 19:24 ./job.jar/job.jar
+1125899906977707    236 -r-x------   1 root     root       239723 Mar  6 19:24 ./job.xml
+ 562949953556442      8 -rwx------   1 root     root         5281 Mar  6 19:25 ./launch_container.sh
+ 562949953556439      0 drwx--x---   1 root     root         4096 Mar  6 19:25 ./tmp
+broken symlinks(find -L . -maxdepth 5 -type l -ls):

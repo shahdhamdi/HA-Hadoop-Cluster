@@ -22,12 +22,13 @@ ENV ZOOKEEPER_CONF_DIR=$ZOOKEEPER_HOME/conf
 ENV PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$ZOOKEEPER_HOME/bin
 
 # ---------------- DOWNLOAD TARBALLS ----------------
-RUN wget https://downloads.apache.org/hadoop/common/hadoop-3.4.2/hadoop-3.4.2.tar.gz -O /tmp/hadoop-3.4.2.tar.gz && \
+# ---------------- DOWNLOAD TARBALLS ----------------
+RUN wget https://downloads.apache.org/hadoop/common/hadoop-3.3.6/hadoop-3.3.6.tar.gz -O /tmp/hadoop-3.3.6.tar.gz && \
     wget https://downloads.apache.org/zookeeper/zookeeper-3.8.6/apache-zookeeper-3.8.6-bin.tar.gz -O /tmp/apache-zookeeper-3.8.6-bin.tar.gz
 
 # ---------------- EXTRACT ----------------
-RUN tar -xzf /tmp/hadoop-3.4.2.tar.gz -C /opt/ && \
-    mv /opt/hadoop-3.4.2 /opt/hadoop && \
+RUN tar -xzf /tmp/hadoop-3.3.6.tar.gz -C /opt/ && \
+    mv /opt/hadoop-3.3.6 /opt/hadoop && \
     tar -xzf /tmp/apache-zookeeper-3.8.6-bin.tar.gz -C /opt/ && \
     mv /opt/apache-zookeeper-3.8.6-bin /opt/zookeeper && \
     rm /tmp/*.tar.gz
