@@ -1,110 +1,79 @@
-# Hadoop High Availability Cluster 
+# Distributed Hadoop HA Cluster (Docker Based)
 
-A fully containerized **Hadoop High Availability cluster** built using **Docker, Apache Hadoop, HDFS, YARN, and ZooKeeper**.
+This project implements a **multi-node Hadoop cluster with High Availability** using Docker containers.  
+Each container represents an independent node inside a simulated distributed environment.
 
-This project simulates a **distributed Hadoop environment** locally where each container represents a node in a real cluster.
+The cluster is designed to demonstrate:
 
-The cluster demonstrates:
+- HDFS distributed storage
+- High Availability for NameNode
+- ZooKeeper based failover
+- Resource management using YARN
+- Multi-node worker execution
 
-- HDFS High Availability
-- YARN resource management
-- ZooKeeper failover coordination
-- Distributed storage using HDFS
-- Multi-node cluster orchestration
-
----
-
-# Table of Contents
-
-- [Project Overview](#project-overview)
-- [Architecture](#architecture)
-- [Technology Stack](#technology-stack)
-- [Cluster Nodes](#cluster-nodes)
-- [Service Breakdown](#service-breakdown)
-- [Cluster Boot Sequence](#cluster-boot-sequence)
-- [Setup Instructions](#setup-instructions)
-- [Cluster Verification](#cluster-verification)
-- [Web Interfaces](#web-interfaces)
-- [Failover Test](#failover-test)
-- [Conclusion](#conclusion)
+The goal is to recreate the behavior of a **Hadoop cluster architecture** on a local machine.
 
 ---
 
-# Project Overview
+# What This Project Builds
 
-This project provisions a **5-node Hadoop High Availability cluster** using Docker containers.
+The environment launches **five separate nodes** connected through a shared Docker network.
 
-Each container simulates a physical server in a distributed Hadoop deployment.
+These nodes collaborate to provide:
 
-The cluster includes:
+- fault tolerant HDFS storage
+- distributed processing
+- cluster coordination
+- automatic master failover
 
-- Active NameNode
-- Standby NameNode
-- JournalNode quorum
-- ZooKeeper coordination
-- YARN ResourceManager
-- Worker nodes running DataNode and NodeManager
-
-This architecture ensures **fault tolerance**, allowing the system to continue running even if a master node fails.
+The system ensures that if the **primary NameNode stops**, the **standby node automatically becomes active**.
 
 ---
 
-# Architecture
-
+# Cluster Architecture
 <img width="1150" height="627" alt="Image" src="https://github.com/user-attachments/assets/24852089-e627-41cd-9664-1b000e7c3708" />
 
 ---
+# Architecture Explaination
 
-# Technology Stack
+## Master1
 
-| Component | Version | Purpose |
-|--------|--------|--------|
-| Docker | 20+ | Container runtime |
-| Docker Compose | v3.9 | Cluster orchestration |
-| Ubuntu | 24.04 | Base OS |
-| Apache Hadoop | 3.4.2 | Distributed computing framework |
-| HDFS | 3.4.2 | Distributed filesystem |
-| YARN | 3.4.2 | Resource manager |
-| ZooKeeper | 3.8.6 | Distributed coordination |
-| OpenJDK | 11 | Java runtime |
+Main services running on this node:
 
----
-
-# Cluster Nodes
-
-## node01 — Active Master
-
-Services:
-
-- NameNode (Active)
+- Active NameNode
 - ResourceManager
 - JournalNode
 - ZooKeeper
 
 Responsibilities:
 
-- Handles filesystem operations
-- Manages cluster resources
-- Coordinates failover services
+- managing HDFS metadata
+- handling filesystem requests
+- scheduling distributed jobs
 
+---
 
+## Master2
 
-## node02 — Standby Master
+Runs as the **backup master node**.
 
 Services:
 
-- NameNode (Standby)
-- ResourceManager (Standby)
+- Standby NameNode
+- Standby ResourceManager
 - JournalNode
 - ZooKeeper
 
 Responsibilities:
 
-- Syncs metadata with Active NameNode
-- Takes over in case of failure
+- continuously synchronizing filesystem metadata
+- taking control if the primary NameNode fails
 
+---
 
-## node03 — Coordination + Worker
+## Worker1
+
+Mixed role node.
 
 Services:
 
@@ -115,13 +84,15 @@ Services:
 
 Responsibilities:
 
-- Completes JournalNode quorum
-- Executes YARN containers
-- Stores HDFS blocks
+- storing HDFS data blocks
+- executing YARN containers
+- participating in quorum services
 
 ---
 
-## node04 — Worker Node
+## Worker2
+
+Worker node focused on computation and storage.
 
 Services:
 
@@ -130,12 +101,14 @@ Services:
 
 Responsibilities:
 
-- Stores HDFS data blocks
-- Executes distributed tasks
+- storing distributed data
+- running processing tasks
 
 ---
 
-## node05 — Worker Node
+## Worker3
+
+Additional worker node that expands cluster capacity.
 
 Services:
 
@@ -144,111 +117,47 @@ Services:
 
 Responsibilities:
 
-- Provides additional storage
-- Provides compute resources
+- additional storage
+- additional compute resources
 
 ---
 
-# Service Breakdown
+# Tools and Technologies
 
-## NameNode
-
-Maintains the entire HDFS namespace and metadata.
-
-Configuration example:
-
-```bash
-dfs.namenode.name.dir=/opt/hadoop/data/namenode
-```
----
-
-## DataNode
-
-Stores the actual HDFS blocks.
-
-Configuration:
-
-```bash
-dfs.datanode.data.dir=/opt/hadoop/data/datanode
-```
+| Tool | Purpose |
+|-----|------|
+| Docker | Container runtime |
+| Docker Compose | Multi-container orchestration |
+| Ubuntu | Base container OS |
+| Apache Hadoop | Distributed data platform |
+| HDFS | Distributed file system |
+| YARN | Resource scheduling system |
+| ZooKeeper | Cluster coordination |
+| OpenJDK | Java runtime |
 
 ---
+# Starting the Cluster
 
-## JournalNode
-
-Stores replicated edit logs required for NameNode synchronization.
-
----
-
-## ZooKeeper
-
-Provides distributed coordination including:
-
-- leader election
-- failover coordination
-- cluster state management
-
----
-
-## ResourceManager
-
-Responsible for:
-
-- job scheduling
-- cluster resource allocation
-- monitoring running applications
-
-
----
-
-## NodeManager
-
-Runs on worker nodes and manages container execution.
-
-Responsibilities:
-
-- launching containers
-- monitoring resources
-- reporting status to ResourceManager
-
----
-
-# Cluster Boot Sequence
-
-Cluster services start in the following order:
-
-1. ZooKeeper
-2. JournalNodes
-3. Active NameNode
-4. Standby NameNode bootstrap
-5. ResourceManagers
-6. DataNodes
-7. NodeManagers
-
----
-
-# Setup Instructions
-
-## Clone repository
+## Clone the project
 
 ```bash
 git clone https://github.com/shahdhamdi/HA-Hadoop-Cluster.git
 cd hadoop-ha-cluster
 ```
 
-## Build docker images
+## Build containers
 
 ```bash
 docker compose build
 ```
 
-## Start cluster
+## Launch the cluster
 
 ```bash
 docker compose up -d
 ```
 
-## Check running containers
+## Verify containers are running
 
 ```bash
 docker ps
@@ -256,73 +165,47 @@ docker ps
 
 ---
 
-# Cluster Verification
+# Basic Cluster Checks
 
-Check running services:
+Check running Hadoop processes:
 
 ```bash
-docker exec -it --user root node01 jps
+docker exec -it node01 jps
 ```
 
-Check NameNode states:
+Verify NameNode state:
 
 ```bash
 hdfs haadmin -getServiceState nn1
 hdfs haadmin -getServiceState nn2
 ```
 
-Check HDFS cluster status:
 
-```bash
-hdfs dfsadmin -report
-```
+# Web Dashboards
 
----
+These interfaces allow monitoring cluster components.
 
-# Web Interfaces
-
-| Service | URL |
+| Component | Address |
 |------|------|
-| Active NameNode | http://localhost:9871 |
-| Standby NameNode | http://localhost:9872 |
+| NameNode (Active) | http://localhost:9871 |
+| NameNode (Standby) | http://localhost:9872 |
 | ResourceManager | http://localhost:8081 |
-| ResourceManager Standby | http://localhost:8082 |
-| NodeManager node03 | http://localhost:8083 |
-| NodeManager node04 | http://localhost:8084 |
-| NodeManager node05 | http://localhost:8085 |
+| Worker NodeManager | http://localhost:8083 |
+| Worker NodeManager | http://localhost:8084 |
+| Worker NodeManager | http://localhost:8085 |
 
 ---
 
-# Failover Test
 
-Simulate NameNode failure.
+# Final Notes
 
-Stop the active NameNode:
+This project demonstrates how distributed systems like Hadoop achieve **fault tolerance and scalability**.
 
-```bash
-docker exec node01 pkill -f NameNode
-```
-
-Check the state:
-
-```bash
-hdfs haadmin -getServiceState nn1
-hdfs haadmin -getServiceState nn2
-```
-
-The standby node should become **Active** automatically.
-
----
-
-# Conclusion
-
-This project demonstrates a **fully functional Hadoop High Availability cluster** using containerized infrastructure.
-
-Key concepts implemented:
+Key features implemented:
 
 - Active / Standby NameNode architecture
-- JournalNode quorum for edit log replication
-- ZooKeeper coordination for automatic failover
-- Distributed storage using HDFS
-- Distributed processing using YARN
+- JournalNode quorum synchronization
+- ZooKeeper driven failover
+- distributed storage using HDFS
+- distributed job execution with YARN
 
