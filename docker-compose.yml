@@ -1,8 +1,6 @@
 version: "3.9"
 
 services:
-
-  # ── node01: Active NameNode + ResourceManager ───────────────
   node01:
     build:
       context: .
@@ -29,7 +27,6 @@ services:
       timeout: 5s
       retries: 5
 
-  # ── node02: Standby NameNode + ResourceManager ───────────────
   node02:
     image: hadoop-cluster:latest
     container_name: node02
@@ -48,7 +45,6 @@ services:
     environment:
       - NODE_ROLE=node02
 
-  # ── node03: NodeManager + JournalNode ────────────────────────
   node03:
     image: hadoop-cluster:latest
     container_name: node03
@@ -66,7 +62,6 @@ services:
     environment:
       - NODE_ROLE=node03
 
-  # ── node04: NodeManager ──────────────────────────────────────
   node04:
     image: hadoop-cluster:latest
     container_name: node04
@@ -81,7 +76,7 @@ services:
     environment:
       - NODE_ROLE=node04
 
-  # ── node05: NodeManager ──────────────────────────────────────
+
   node05:
     image: hadoop-cluster:latest
     container_name: node05
@@ -96,18 +91,7 @@ services:
     environment:
       - NODE_ROLE=node05
 
-# ── Named volumes ─────────────────────────────────────────────
-volumes:
-  node01-data:
-  node01-zk:
-  node02-data:
-  node02-zk:
-  node03-data:
-  node03-zk:
-  node04-data:
-  node05-data:
 
-# ── Network ──────────────────────────────────────────────────
 networks:
   cluster-network:
     driver: bridge
