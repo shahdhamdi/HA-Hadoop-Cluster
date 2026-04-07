@@ -1,96 +1,99 @@
 version: "3.9"
 
 services:
-  node01:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: hadoop-cluster:latest
+  node1:
+    build : .
     container_name: node01
     hostname: node01
     ports:
-      - "9871:9870"   # NameNode Web UI
-      - "8081:8088"   # ResourceManager Web UI
-      - "8481:8485"   # JournalNode RPC
-      - "2181:2181"   # ZooKeeper client
+      # - "8485:8485"   # JournalNode RPC
+      - "8480:8480"   # JournalNode HTTP UI
+      - "9871:9870" # Namenode UI
+      - "8081:8088" # Yarn UI
+    command: bash /start-all.sh
     volumes:
-      - ./shared:/shared
-      - node01-data:/opt/hadoop/data
-      - node01-zk:/opt/zookeeper/data
+    - ./jn1:/opt/data/journalnode
+    - ./shared:/opt/hadoop/etc/hadoop
+    - ./nn1:/shared/nn
+    - ./start-all.sh:/start-all.sh
+    - ./data:/data
     networks:
       - cluster-network
-    environment:
-      - NODE_ROLE=node01
-    healthcheck:
-      test: ["CMD-SHELL", "jps | grep -q NameNode"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
-  node02:
-    image: hadoop-cluster:latest
+  node2:
+    build : .
     container_name: node02
     hostname: node02
     ports:
-      - "9872:9870"   # NameNode Web UI
-      - "8082:8088"   # ResourceManager Web UI
-      - "8482:8485"   # JournalNode RPC
-      - "2182:2181"
+      # - "8486:8485"   # JournalNode RPC
+      - "8481:8480"   # JournalNode HTTP UI
+      - "9872:9870"   # Namenode UI
+      - "8082:8088"   # Yarn UI
+    command: bash /start-all.sh
     volumes:
-      - ./shared:/shared
-      - node02-data:/opt/hadoop/data
-      - node02-zk:/opt/zookeeper/data
+    - ./jn2:/opt/data/journalnode
+    - ./shared:/opt/hadoop/etc/hadoop
+    - ./nn2:/shared/nn
+    - ./start-all.sh:/start-all.sh
+    - ./data:/data
     networks:
       - cluster-network
-    environment:
-      - NODE_ROLE=node02
 
-  node03:
-    image: hadoop-cluster:latest
+  node3:
+    build : .
     container_name: node03
     hostname: node03
     ports:
-      - "8483:8485"   # JournalNode RPC
-      - "2183:2181"   # ZooKeeper client
-      - "8083:8042"   # NodeManager Web UI
+      # - "8487:8485"   # JournalNode RPC
+      - "8482:8480"   # JournalNode HTTP UI
+      - "9864:9864"   # DataNode HTTP UI
+      # - "9873:9870"
+      # - "8083:8088"
+    command: bash /start-all.sh
     volumes:
-      - ./shared:/shared
-      - node03-data:/opt/hadoop/data
-      - node03-zk:/opt/zookeeper/data
+    - ./jn3:/opt/data/journalnode
+    - ./shared:/opt/hadoop/etc/hadoop
+    - ./dn3:/shared/dn
+    - ./start-all.sh:/start-all.sh
+    - ./data:/data
     networks:
       - cluster-network
-    environment:
-      - NODE_ROLE=node03
 
-  node04:
-    image: hadoop-cluster:latest
+  node4:
+    build : .
     container_name: node04
     hostname: node04
     ports:
-      - "8084:8042"   # NodeManager Web UI
+      # - "8488:8485"
+      - "9865:9864"   # DataNode HTTP UI
+      # - "9874:9870"
+      # - "8084:8088"
+    command: bash /start-all.sh
     volumes:
-      - ./shared:/shared
-      - node04-data:/opt/hadoop/data
+    - ./dn4:/shared/dn
+    - ./shared:/opt/hadoop/etc/hadoop
+    - ./start-all.sh:/start-all.sh
+    - ./data:/data
     networks:
       - cluster-network
-    environment:
-      - NODE_ROLE=node04
 
-
-  node05:
-    image: hadoop-cluster:latest
+  node5:
+    build : .
     container_name: node05
     hostname: node05
     ports:
-      - "8085:8042"   # NodeManager Web UI
+      # - "8489:8485"
+      - "9866:9864"   # DataNode HTTP UI
+      # - "9875:9870"
+      # - "8085:8088"
+    command: bash /start-all.sh
     volumes:
-      - ./shared:/shared
-      - node05-data:/opt/hadoop/data
+    - ./dn5:/shared/dn
+    - ./shared:/opt/hadoop/etc/hadoop
+    - ./start-all.sh:/start-all.sh
+    - ./data:/data
     networks:
       - cluster-network
-    environment:
-      - NODE_ROLE=node05
-
 
 networks:
   cluster-network:

@@ -1,44 +1,74 @@
 FROM ubuntu:24.04
 
+# Prevent interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
 
-
-RUN apt-get update && apt-get install -y \
+# Install dependencies
+RUN apt update && apt install -y \
     openjdk-11-jdk \
-    openssh-server \
-    openssh-client \
-    wget vim curl net-tools netcat-openbsd \
-    pdsh sudo \
+    ssh \
+    rsync \
+    wget \
+    pdsh \
+    curl \
+    nano \
+    iputils-ping \
     && rm -rf /var/lib/apt/lists/*
 
-
+# Set JAVA_HOME
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+ENV PATH=$PATH:$JAVA_HOME/bin
+
+# Download Hadoop
+RUN wget https://downloads.apache.org/hadoop/common/hadoop-3.3.6/hadoop-3.3.6.tar.gz \
+    && tar -xvzf hadoop-3.3.6.tar.gz \
+    && mv hadoop-3.3.6 /opt/hadoop \
+    && rm hadoop-3.3.6.tar.gz
+
+# Download ZooKeeper
+RUN cd /opt && \
+    wget https://archive.apache.org/dist/zookeeper/zookeeper-3.9.4/apache-zookeeper-3.9.4-bin.tar.gz && \
+    tar -xzvf apache-zookeeper-3.9.4-bin.tar.gz && \
+    mv apache-zookeeper-3.9.4-bin /opt/zookeeper && \
+    rm apache-zookeeper-3.9.4-bin.tar.gz
+
+# Create necessary directories
+RUN mkdir -p /opt/data/zookeeper && \
+    mkdir -p /opt/hadoop/logs && \
+    chown -R root:root /opt/data/zookeeper /opt/hadoop/logs && \
+    chmod -R 755 /opt/data/zookeeper /opt/hadoop/logs
+
+# Create zoo.cfg automatically
+RUN cp /opt/zookeeper/conf/zoo_sample.cfg /opt/zookeeper/conf/zoo.cfg && \
+    echo "tickTime=2000" >> /opt/zookeeper/conf/zoo.cfg && \
+    echo "dataDir=/opt/data/zookeeper" >> /opt/zookeeper/conf/zoo.cfg && \
+    echo "clientPort=2181" >> /opt/zookeeper/conf/zoo.cfg && \
+    echo "initLimit=5" >> /opt/zookeeper/conf/zoo.cfg && \
+    echo "syncLimit=2" >> /opt/zookeeper/conf/zoo.cfg && \
+    echo "server.1=node01:2888:3888" >> /opt/zookeeper/conf/zoo.cfg && \
+    echo "server.2=node02:2888:3888" >> /opt/zookeeper/conf/zoo.cfg && \
+    echo "server.3=node03:2888:3888" >> /opt/zookeeper/conf/zoo.cfg
+
+# Set Hadoop Environment
 ENV HADOOP_HOME=/opt/hadoop
-ENV HADOOP_CONF_DIR=/opt/hadoop/etc/hadoop
-ENV ZOOKEEPER_HOME=/opt/zookeeper
-ENV ZOOKEEPER_CONF_DIR=$ZOOKEEPER_HOME/conf
-ENV PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$ZOOKEEPER_HOME/bin
+ENV PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+ENV HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
+ENV HADOOP_MAPRED_HOME=$HADOOP_HOME
 
 
-RUN wget https://downloads.apache.org/hadoop/common/hadoop-3.3.6/hadoop-3.3.6.tar.gz -O /tmp/hadoop-3.3.6.tar.gz && \
-    wget https://downloads.apache.org/zookeeper/zookeeper-3.8.6/apache-zookeeper-3.8.6-bin.tar.gz -O /tmp/apache-zookeeper-3.8.6-bin.tar.gz
+# Add JAVA_HOME and classpath settings inside Hadoop configs
+RUN echo "export JAVA_HOME=$JAVA_HOME" >> $HADOOP_HOME/etc/hadoop/hadoop-env.sh && \
+    echo "export JAVA_HOME=$JAVA_HOME" >> $HADOOP_HOME/etc/hadoop/yarn-env.sh && \
+    echo "export HADOOP_CLASSPATH=\$HADOOP_CLASSPATH:\$HADOOP_HOME/etc/hadoop" >> $HADOOP_HOME/etc/hadoop/hadoop-env.sh && \
+    echo "export HADOOP_OPTS=\"\$HADOOP_OPTS -Dlog4j.configuration=file:\$HADOOP_HOME/etc/hadoop/log4j.properties\"" >> $HADOOP_HOME/etc/hadoop/hadoop-env.sh
 
+# Export to bashrc
+RUN echo "export JAVA_HOME=$JAVA_HOME" >> ~/.bashrc && \
+    echo "export HADOOP_HOME=$HADOOP_HOME" >> ~/.bashrc && \
+    echo "export HADOOP_CONF_DIR=$HADOOP_CONF_DIR" >> ~/.bashrc && \
+    echo "export HADOOP_MAPRED_HOME=$HADOOP_HOME" >> ~/.bashrc && \
+    echo "export HADOOP_YARN_HOME=$HADOOP_HOME" >> ~/.bashrc && \
+    echo "export HADOOP_LOG_DIR=$HADOOP_LOG_DIR" >> ~/.bashrc && \
+    echo "export HADOOP_CLASSPATH=\$HADOOP_HOME/etc/hadoop:\$HADOOP_CLASSPATH" >> ~/.bashrc
 
-RUN tar -xzf /tmp/hadoop-3.3.6.tar.gz -C /opt/ && \
-    mv /opt/hadoop-3.3.6 /opt/hadoop && \
-    tar -xzf /tmp/apache-zookeeper-3.8.6-bin.tar.gz -C /opt/ && \
-    mv /opt/apache-zookeeper-3.8.6-bin /opt/zookeeper && \
-    rm /tmp/*.tar.gz
-
-COPY shared/config/hadoop/core-site.xml      $HADOOP_CONF_DIR/
-COPY shared/config/hadoop/hdfs-site.xml      $HADOOP_CONF_DIR/
-COPY shared/config/hadoop/yarn-site.xml      $HADOOP_CONF_DIR/
-COPY shared/config/hadoop/mapred-site.xml    $HADOOP_CONF_DIR/
-COPY shared/config/hadoop/hadoop-env.sh      $HADOOP_CONF_DIR/
-COPY shared/config/zookeeper/zoo.cfg         $ZOOKEEPER_CONF_DIR/
-
-
-COPY Scripts/start-all.sh /start-all.sh
-RUN chmod +x /start-all.sh
-
-
-ENTRYPOINT ["/start-all.sh"]
+WORKDIR /root
