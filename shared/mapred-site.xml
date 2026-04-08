@@ -1,13 +1,12 @@
 <?xml version="1.0"?>
 <configuration>
 
-  <!-- MapReduce framework -->
+ 
   <property>
     <name>mapreduce.framework.name</name>
     <value>yarn</value>
   </property>
 
-  <!-- ResourceManager address -->
   <property>
     <name>yarn.resourcemanager.address</name>
     <value>node01:8032</value>
@@ -18,7 +17,6 @@
     <value>node01:8030</value>
   </property>
 
-  <!-- Job history -->
   <property>
     <name>mapreduce.jobhistory.address</name>
     <value>node01:10020</value>
@@ -29,7 +27,6 @@
     <value>node01:19888</value>
   </property>
 
-  <!-- Local dir -->
   <property>
     <name>mapreduce.cluster.local.dir</name>
     <value>/shared/mapred/local</value>
